@@ -1,4 +1,5 @@
 "use client";
+import clsx from "clsx";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -30,7 +31,10 @@ const FormHook = () => {
       <input
         {...register("firstName", { required: true, minLength: 2 })}
         aria-invalid={errors.firstName ? "true" : "false"}
-        className="border border-black w-full lg:w-3/5 rounded-md h-12 px-4"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.firstName }
+        )}
       />
       {errors.firstName?.type === "required" && (
         <p role="alert" className="text-red-600">
@@ -49,7 +53,10 @@ const FormHook = () => {
           minLength: 2,
         })}
         aria-invalid={errors.secondName ? "true" : "false"}
-        className="border border-black w-full lg:w-3/5  rounded-md h-12 px-4"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.secondName }
+        )}
       />
       {errors.secondName?.type === "required" && (
         <p role="alert" className="text-red-600">
@@ -64,8 +71,11 @@ const FormHook = () => {
       {/* //--------------- */}
       <input
         {...register("age", { min: 18, max: 99, required: true })}
-        aria-invalid={errors.secondName ? "true" : "false"}
-        className="border border-black w-full lg:w-3/5  rounded-md h-12 px-4"
+        aria-invalid={errors.age ? "true" : "false"}
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.age }
+        )}
       />
       {errors.age?.type === "required" && (
         <p role="alert" className="text-red-600">
@@ -86,7 +96,11 @@ const FormHook = () => {
             message: "Invalid email address",
           },
         })}
-        className="border border-black w-full lg:w-3/5  rounded-md h-12 px-4"
+        aria-invalid={errors.email ? "true" : "false"}
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.email }
+        )}
       />
       {errors.email && <p>{errors.email.message}</p>}
       {/* //--------------- */}
@@ -99,7 +113,11 @@ const FormHook = () => {
             message: "Not valid phone number",
           },
         })}
-        className="border border-black w-full lg:w-3/5  rounded-md h-12 px-4"
+        aria-invalid={errors.telefon ? "true" : "false"}
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.telefon }
+        )}
       />
       {errors.telefon && (
         <p className="text-red-500">{errors.telefon.message}</p>
