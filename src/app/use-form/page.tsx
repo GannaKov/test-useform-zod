@@ -1,7 +1,13 @@
+import FormHook from "@/components/FormHook";
 import React from "react";
 
 const page = () => {
-  return <div>UseForm</div>;
+  return (
+    <div className="flex flex-col items-center justify-center w-4/5 mx-auto py-20">
+      <h1 className="text-3xl mb-8 font-semibold">Form with useForm</h1>
+      <FormHook />
+    </div>
+  );
 };
 
 export default page;
