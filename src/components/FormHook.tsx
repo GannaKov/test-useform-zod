@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 
 type FormType = {
   firstName: string;
@@ -15,17 +15,38 @@ const FormHook = () => {
   const {
     register,
     handleSubmit,
-    // watch,
+    reset,
+    resetField,
+    watch,
     formState: { errors },
-  } = useForm<FormType>({ defaultValues: { age: 18 } });
+
+    formState: { isSubmitSuccessful },
+    clearErrors,
+  } = useForm<FormType>({
+    defaultValues: {
+      firstName: "",
+      secondName: "",
+      age: 18,
+      email: "",
+      telefon: "",
+    },
+  });
+
+  React.useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ firstName: "", secondName: "", age: 18, email: "", telefon: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   const submit: SubmitHandler<FormType> = (data) => {
     console.log(data);
   };
-
+  const errorForm: SubmitErrorHandler<FormType> = (er) => {
+    console.log("er-", er);
+  };
   return (
     <form
-      onSubmit={handleSubmit(submit)}
+      onSubmit={handleSubmit(submit, errorForm)}
       className="flex flex-col gap-4 text-black w-full items-center"
     >
       <input
@@ -36,6 +57,13 @@ const FormHook = () => {
           { "border-red-500": errors.firstName }
         )}
       />
+      <button
+        type="button"
+        className="border border-blue-700 w-32 rounded-md h-6 px-4 mt-3"
+        onClick={() => resetField("firstName")}
+      >
+        Clear Field
+      </button>
       {errors.firstName?.type === "required" && (
         <p role="alert" className="text-red-600">
           First name is required
@@ -58,6 +86,7 @@ const FormHook = () => {
           { "border-red-500": errors.secondName }
         )}
       />
+
       {errors.secondName?.type === "required" && (
         <p role="alert" className="text-red-600">
           Second name is required
@@ -107,7 +136,7 @@ const FormHook = () => {
       <input
         placeholder="+1234567890"
         {...register("telefon", {
-          required: "Телефон обязателен",
+          required: "Tel is required",
           pattern: {
             value: /^[+]?[0-9]{10,15}$/,
             message: "Not valid phone number",
@@ -127,6 +156,13 @@ const FormHook = () => {
         className="border border-black w-32 rounded-md h-12 px-4 mt-7"
       >
         Submit
+      </button>
+      <button
+        type="button"
+        className="border border-blue-700 w-32 rounded-md h-12 px-4 mt-3"
+        onClick={() => clearErrors()}
+      >
+        Clear Errors
       </button>
     </form>
   );
