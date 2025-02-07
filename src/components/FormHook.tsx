@@ -31,7 +31,13 @@ const FormHook = () => {
       telefon: "",
     },
   });
-
+  const [firstName, secondName, age, email, telefon] = watch([
+    "firstName",
+    "secondName",
+    "age",
+    "email",
+    "telefon",
+  ]);
   React.useEffect(() => {
     if (isSubmitSuccessful) {
       reset({ firstName: "", secondName: "", age: 18, email: "", telefon: "" });
@@ -164,6 +170,9 @@ const FormHook = () => {
       >
         Clear Errors
       </button>
+      <p>
+        {firstName} {secondName} {age} {email} {telefon}
+      </p>
     </form>
   );
 };
