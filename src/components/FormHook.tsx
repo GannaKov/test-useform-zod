@@ -50,7 +50,10 @@ const FormHook = () => {
 
   const submit: SubmitHandler<FormType> = async (data) => {
     try {
-      await sendEmail(data);
+      const response = await sendEmail(data);
+      if (!response.success) {
+        throw new Error(response.error as string);
+      }
       toast.success(`Successfully saved, ${data.firstName}`, {
         duration: 4000,
 
