@@ -2,14 +2,18 @@
 import clsx from "clsx";
 import React from "react";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import FormType from "@/types/types";
+import { sendEmail } from "@/app/actions/email";
+import toast, { Toaster } from "react-hot-toast";
 
-type FormType = {
-  firstName: string;
-  secondName: string;
-  age: number;
-  email: string;
-  telefon: string;
-};
+// const tostOptions = {
+//   duration: 4000,
+
+//   ariaProps: {
+//     role: "status",
+//     "aria-live": "polite",
+//   },
+// };
 
 const FormHook = () => {
   const {
@@ -44,9 +48,30 @@ const FormHook = () => {
     }
   }, [isSubmitSuccessful, reset]);
 
-  const submit: SubmitHandler<FormType> = (data) => {
-    console.log(data);
+  const submit: SubmitHandler<FormType> = async (data) => {
+    try {
+      await sendEmail(data);
+      toast.success(`Successfully saved, ${data.firstName}`, {
+        duration: 4000,
+
+        ariaProps: {
+          role: "status",
+          "aria-live": "polite",
+        },
+      });
+    } catch (error) {
+      console.error("error-", error);
+      toast.error("This is an error!", {
+        duration: 4000,
+
+        ariaProps: {
+          role: "status",
+          "aria-live": "polite",
+        },
+      });
+    }
   };
+
   const errorForm: SubmitErrorHandler<FormType> = (er) => {
     console.log("er-", er);
   };
@@ -157,6 +182,10 @@ const FormHook = () => {
       {errors.telefon && (
         <p className="text-red-500">{errors.telefon.message}</p>
       )}
+      <Toaster
+        position="top-center"
+        toastOptions={{ style: { minWidth: "200px", padding: "16px" } }}
+      />
       <button
         type="submit"
         className="border border-black w-32 rounded-md h-12 px-4 mt-7"
