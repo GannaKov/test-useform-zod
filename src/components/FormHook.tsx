@@ -6,15 +6,6 @@ import FormType from "@/types/types";
 import { sendEmail } from "@/app/actions/email";
 import toast, { Toaster } from "react-hot-toast";
 
-// const tostOptions = {
-//   duration: 4000,
-
-//   ariaProps: {
-//     role: "status",
-//     "aria-live": "polite",
-//   },
-// };
-
 const FormHook = () => {
   const {
     register,

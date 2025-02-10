@@ -7,18 +7,18 @@ import { EmailTemplate } from "@/components/email-template";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const myEmail = process.env.MY_EMAIL;
+
 export async function sendEmail(formData: FormType) {
   try {
     const { firstName, secondName, age, email, telefon } = formData;
     console.log(firstName, secondName, age, email, telefon);
 
     const message = `Name: ${firstName} ${secondName}, Age: ${age}, Email: ${email}, Telefon: ${telefon}`;
-    // const emailContent = <EmailTemplate message={message} />;
     const emailContent = React.createElement(EmailTemplate, { message });
     if (!myEmail) {
       throw new Error("MY_EMAIL is not defined in environment variables.");
     }
-    console.log("email", myEmail);
+
     const { data, error } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
       to: myEmail,
