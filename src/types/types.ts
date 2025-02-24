@@ -1,7 +1,9 @@
 export default interface FormType {
   firstName: string;
   secondName: string;
-  age: number;
+  age?: number;
   email: string;
   telefon: string;
+  password: string;
+  confirmPassword: string;
 }

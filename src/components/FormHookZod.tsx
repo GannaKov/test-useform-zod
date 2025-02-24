@@ -6,37 +6,38 @@ import FormType from "@/types/types";
 import { sendEmail } from "@/app/actions/email";
 import toast, { Toaster } from "react-hot-toast";
 
-const FormHook = () => {
+const FormHookZod = () => {
   const {
     register,
     handleSubmit,
     reset,
-    resetField,
+
     watch,
     formState: { errors },
 
     formState: { isSubmitSuccessful },
-    clearErrors,
   } = useForm<FormType>({
     defaultValues: {
       firstName: "",
       secondName: "",
-      age: 18,
+
       email: "",
       telefon: "",
+      password: "",
+      confirmPassword: "",
     },
   });
-  const [firstName, secondName, age, email, telefon] = watch([
-    "firstName",
-    "secondName",
-    "age",
-    "email",
-    "telefon",
-  ]);
 
   React.useEffect(() => {
     if (isSubmitSuccessful) {
-      reset({ firstName: "", secondName: "", age: 18, email: "", telefon: "" });
+      reset({
+        firstName: "",
+        secondName: "",
+        email: "",
+        telefon: "",
+        password: "",
+        confirmPassword: "",
+      });
     }
   }, [isSubmitSuccessful, reset]);
 
@@ -46,18 +47,7 @@ const FormHook = () => {
       if (!response.success) {
         throw new Error(response.error as string);
       }
-      // sec var
-      // const response = await fetch("/api/sendEmail", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(data),
-      // });
-      // const result = await response.json();
 
-      // if (!result.success) {
-      //   throw new Error(result.error);
-      // }
-      //end sec var
       toast.success(`Successfully saved, ${data.firstName}`, {
         duration: 4000,
 
@@ -99,14 +89,9 @@ const FormHook = () => {
           { "border-red-500": errors.firstName }
         )}
       />
-      <button
-        type="button"
-        className="border border-blue-700 w-32 rounded-md h-6 px-4 mt-3"
-        onClick={() => resetField("firstName")}
-      >
-        Clear Field
-      </button>
-      {errors.firstName && <p>{errors.firstName.message}</p>}
+      {errors.firstName && (
+        <p className="text-red-500">{errors.firstName.message}</p>
+      )}
       {/* //--------------- */}
       <input
         {...register("secondName", {
@@ -120,32 +105,15 @@ const FormHook = () => {
           { "border-red-500": errors.secondName }
         )}
       />
-
-      {errors.secondName && <p>{errors.secondName.message}</p>}
-      {/* //--------------- */}
-      <input
-        {...register("age", { min: 18, max: 99, required: true })}
-        aria-invalid={errors.age ? "true" : "false"}
-        className={clsx(
-          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
-          { "border-red-500": errors.age }
-        )}
-      />
-      {errors.age?.type === "required" && (
-        <p role="alert" className="text-red-600">
-          Age is required
-        </p>
-      )}
-      {(errors.age?.type === "min" || errors.age?.type === "max") && (
-        <p role="alert" className="text-red-600">
-          Age should be between 18 and 99
-        </p>
+      {errors.secondName && (
+        <p className="text-red-500">{errors.secondName.message}</p>
       )}
       {/* //--------------- */}
       <input
         placeholder="Email"
         {...register("email", {
           required: "Email is required",
+
           pattern: {
             value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
             message: "Invalid email address",
@@ -157,7 +125,7 @@ const FormHook = () => {
           { "border-red-500": errors.email }
         )}
       />
-      {errors.email && <p>{errors.email.message}</p>}
+      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
       {/* //--------------- */}
       <input
         placeholder="+1234567890"
@@ -177,6 +145,40 @@ const FormHook = () => {
       {errors.telefon && (
         <p className="text-red-500">{errors.telefon.message}</p>
       )}
+      {/* ........................ */}
+      <input
+        {...register("password", {
+          required: "Password is required",
+          minLength: { value: 4, message: "Password is too short" },
+        })}
+        aria-invalid={errors.password ? "true" : "false"}
+        placeholder="Password"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.password }
+        )}
+      />
+      {errors.password && (
+        <p className="text-red-500">{errors.password.message}</p>
+      )}
+      {/* ........................ */}
+      <input
+        {...register("confirmPassword", {
+          required: "Password is required",
+          minLength: { value: 4, message: "Password is too short" },
+          validate: (value) =>
+            value === watch("password") || "The passwords do not match",
+        })}
+        aria-invalid={errors.confirmPassword ? "true" : "false"}
+        placeholder="Confirm Password"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.confirmPassword }
+        )}
+      />
+      {errors.confirmPassword && (
+        <p className="text-red-500">{errors.confirmPassword.message}</p>
+      )}
       <Toaster
         position="top-center"
         toastOptions={{ style: { minWidth: "200px", padding: "16px" } }}
@@ -187,18 +189,8 @@ const FormHook = () => {
       >
         Submit
       </button>
-      <button
-        type="button"
-        className="border border-blue-700 w-32 rounded-md h-12 px-4 mt-3"
-        onClick={() => clearErrors()}
-      >
-        Clear Errors
-      </button>
-      <p>
-        {firstName} {secondName} {age} {email} {telefon}
-      </p>
     </form>
   );
 };
 
-export default FormHook;
+export default FormHookZod;
