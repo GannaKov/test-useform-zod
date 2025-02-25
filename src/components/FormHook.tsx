@@ -36,6 +36,7 @@ const FormHook = () => {
 
   React.useEffect(() => {
     if (isSubmitSuccessful) {
+      //or this in submit function
       reset({ firstName: "", secondName: "", age: 18, email: "", telefon: "" });
     }
   }, [isSubmitSuccessful, reset]);
@@ -46,18 +47,7 @@ const FormHook = () => {
       if (!response.success) {
         throw new Error(response.error as string);
       }
-      // sec var
-      // const response = await fetch("/api/sendEmail", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(data),
-      // });
-      // const result = await response.json();
 
-      // if (!result.success) {
-      //   throw new Error(result.error);
-      // }
-      //end sec var
       toast.success(`Successfully saved, ${data.firstName}`, {
         duration: 4000,
 
@@ -88,6 +78,7 @@ const FormHook = () => {
       className="flex flex-col gap-4 text-black w-full items-center"
     >
       <input
+        type="text"
         {...register("firstName", {
           required: "First name is required",
           minLength: { value: 2, message: "First Name is too short" },
@@ -106,9 +97,12 @@ const FormHook = () => {
       >
         Clear Field
       </button>
-      {errors.firstName && <p>{errors.firstName.message}</p>}
+      {errors.firstName && (
+        <p className="text-red-500">{errors.firstName.message}</p>
+      )}
       {/* //--------------- */}
       <input
+        type="text"
         {...register("secondName", {
           required: true,
           minLength: { value: 2, message: "Second Name is too short" },
@@ -121,7 +115,9 @@ const FormHook = () => {
         )}
       />
 
-      {errors.secondName && <p>{errors.secondName.message}</p>}
+      {errors.secondName && (
+        <p className="text-red-500">{errors.secondName.message}</p>
+      )}
       {/* //--------------- */}
       <input
         {...register("age", { min: 18, max: 99, required: true })}
@@ -143,6 +139,7 @@ const FormHook = () => {
       )}
       {/* //--------------- */}
       <input
+        type="email"
         placeholder="Email"
         {...register("email", {
           required: "Email is required",
@@ -157,9 +154,10 @@ const FormHook = () => {
           { "border-red-500": errors.email }
         )}
       />
-      {errors.email && <p>{errors.email.message}</p>}
+      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
       {/* //--------------- */}
       <input
+        type="tel"
         placeholder="+1234567890"
         {...register("telefon", {
           required: "Tel is required",
@@ -176,6 +174,42 @@ const FormHook = () => {
       />
       {errors.telefon && (
         <p className="text-red-500">{errors.telefon.message}</p>
+      )}
+      {/* ........................ */}
+      <input
+        type="password"
+        {...register("password", {
+          required: "Password is required",
+          minLength: { value: 4, message: "Password is too short" },
+        })}
+        aria-invalid={errors.password ? "true" : "false"}
+        placeholder="Password"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.password }
+        )}
+      />
+      {errors.password && (
+        <p className="text-red-500">{errors.password.message}</p>
+      )}
+      {/* ........................ */}
+      <input
+        type="password"
+        {...register("confirmPassword", {
+          required: "Password is required",
+
+          validate: (value) =>
+            value === watch("password") || "The passwords do not match",
+        })}
+        aria-invalid={errors.confirmPassword ? "true" : "false"}
+        placeholder="Confirm Password"
+        className={clsx(
+          "border border-black w-full lg:w-3/5  rounded-md h-12 px-4",
+          { "border-red-500": errors.confirmPassword }
+        )}
+      />
+      {errors.confirmPassword && (
+        <p className="text-red-500">{errors.confirmPassword.message}</p>
       )}
       <Toaster
         position="top-center"
